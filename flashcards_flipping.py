@@ -4,7 +4,9 @@ from tkinter import ttk
 from random import randint
 
 # BOOK = 'Meine Sachen'
-BOOK = 'kasperle_auf_reisen_ch1'
+BOOK = 'Mein Zoo Gucklochbuch'
+# BOOK = 'kasperle_auf_reisen_ch1'
+
 VOCAB_INPUT = f'vocab/{BOOK}.json'
 SHUFFLE = False
 
@@ -74,7 +76,7 @@ class App(tk.Tk):
 
     def flip_card(self, event):
         self.side ^= 1
-        new_text = self.vocab.words[self.card].translation if self.side else self.vocab.words[self.card].text
+        new_text = self.vocab.words[self.card].text_trans if self.side else self.vocab.words[self.card].text
         self.lbl_word.config(text=new_text)
         self.lbl_lang.config(text='Language: English' if self.side else 'Language: German')
 

@@ -3,7 +3,9 @@ from tkinter import ttk
 from random import randint
 from word import VocabularySchema
 
-BOOK = 'Meine Sachen'
+# BOOK = 'Meine Sachen'
+BOOK = 'Mein Zoo Gucklochbuch'
+
 VOCAB_INPUT = f'vocab/{BOOK}.json'
 SHUFFLE = False
 
@@ -78,7 +80,7 @@ class App(tk.Tk):
         self.hint_label.pack(pady=20)
 
     def answer_button_clicked(self):
-        if self.my_entry.get().lower() == self.vocab.words[self.card].translation.lower():
+        if self.my_entry.get().lower() == self.vocab.words[self.card].text_trans.lower():
             self.answer_label.config(text=f'Correct')
         else:
             self.answer_label.config(text=f'Incorrect')
@@ -109,8 +111,8 @@ class App(tk.Tk):
         self.german_word.config(text=self.vocab.words[self.card].text)
 
     def hint_button_clicked(self):
-        if self.hint_count < len(self.vocab.words[self.card].translation):
-            self.hint = self.hint + self.vocab.words[self.card].translation[self.hint_count]
+        if self.hint_count < len(self.vocab.words[self.card].text_trans):
+            self.hint = self.hint + self.vocab.words[self.card].text_trans[self.hint_count]
             self.hint_label.config(text=self.hint)
             self.hint_count += 1
 

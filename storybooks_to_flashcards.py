@@ -1,85 +1,74 @@
-import spacy
-from word import *
 import json
-import os
-from google_trans_new import google_translator
 import timeit
+import nltk
+from HanTa import HanoverTagger as ht
+from word import *
+import os
+from nltk.corpus import stopwords
+from spacy.lang.de.stop_words import STOP_WORDS
 
 # BOOK = 'books/12mo/Meine Sachen.txt'
 # BOOK = 'books/18mo/Gute Nacht, kleiner Löwe!.txt'
-# BOOK = 'books/12mo/Mein Zoo Gucklochbuch.txt'
+BOOK = 'books/12mo/Mein Zoo Gucklochbuch.txt'
 # BOOK = 'books/unrated/Der Kleine König - Teddy ist weg.txt'
-BOOK = 'books/novels/kasperle_auf_reisen_ch1.txt'
+# BOOK = 'books/novels/kasperle_auf_reisen_ch1.txt'
 # BOOK = 'books/novels/kasperle_auf_reisen.txt'
+# BOOK = 'books/novels/test.txt'
 
-# get the list of POS codes
-with open('lookup/pos_codes.json', 'r') as f:
-    pos_codes = json.load(f)
-
-# get the German to English dictionary
-with open('lookup/german_english.json', 'r') as f:
-    german_english = json.load(f)
+STOP_WORDS_SET = 'spacy'
+# STOP_WORDS_SET = 'nltk'
 
 # open and read the book
 file = open(BOOK, 'rt')
 corpus = file.read()
 
+# get the list of POS codes
+with open('lookup/pos_codes_hanta.json', 'r') as f:
+    pos_codes = json.load(f)
+
 # init the words list
 words = []
-
-# init the translator
-translator = google_translator()
 
 # start a timer
 start_time = timeit.default_timer()
 
-# load the language model
-# nlp = spacy.load('de_dep_news_trf')    # accuracy
-nlp = spacy.load('de_core_news_sm')    # efficiency
+# tokenize the corpus
+tokenizer = nltk.RegexpTokenizer(r'[a-zA-ZäÄüÜöÖß\']+')
+tokens = tokenizer.tokenize(corpus)
 
-# run the pipeline
-doc = nlp(corpus)
+if STOP_WORDS_SET == 'spacy':
+    tokens = [t for t in tokens if not t.lower() in STOP_WORDS]  # spacy stop words
+else:
+    stop_words = set(stopwords.words('german'))
+    tokens = [t for t in tokens if not t.lower() in stop_words]  # nltk stop words
 
-# for every tokenized word
-for token in doc:
+# create the tagger
+tagger = ht.HanoverTagger('morphmodel_ger.pgz')
 
-    # remove stop words
-    if token.is_stop:
-        continue
+# generate POS and lemmata for the tokens
+tags = tagger.tag_sent(tokens, taglevel=1)
+
+for tag in tags:
+    text = tag[0]
+    lemma = tag[1]
+    pos = tag[2]
 
     # remove certain parts of speech
-    pos_list = ['INTJ', 'NUM', 'PRON', 'PROPN', 'PUNCT', 'SPACE', 'X']
-    if token.pos_ in pos_list:
+    pos_list = ['ART', 'CARD', 'FM', 'ITJ', 'KON', 'KOUS', 'NE', 'PDAT', 'PDS', 'PIAT', 'PIS', 'PRELS', 'PTKA',
+                'PTKANT', 'PWS', 'XY']
+    if pos in pos_list:
         continue
 
-    # before translating, make the German text and lemma lowercase unless it's a noun
-    case_list = ['NOUN', 'PROPN']
-    if token.pos_ in case_list:
-        text_case_filtered = token.text
-        lemma_case_filtered = token.lemma_
-    else:
-        text_case_filtered = token.text.lower()
-        lemma_case_filtered = token.lemma_.lower()
+    # skip any tokens where the lemma contains an apostrophe
+    if '\'' in lemma:
+        continue
 
-    # translate it using Google Translate
-    translation = translator.translate(text_case_filtered, lang_src='de', lang_tgt='en')
-    translation = translation.rstrip()
-
-    # after translating, make the English text lowercase unless it's a proper noun
-    case_list = ['PROPN']
-    if token.pos_ in case_list:
-        translation_case_filtered = translation
-    else:
-        translation_case_filtered = translation.lower()
-
-    # translate it using the German-to-English dictionary
-    translation_simple = german_english.get(text_case_filtered, 'NULL')
-    translation_simple_lemma = german_english.get(lemma_case_filtered, 'NULL')
+    # fix capitalization
+    if pos != 'NN':
+        text = text.lower()
 
     # map the data into a custom Word object
-    word = Word(text_case_filtered, lemma_case_filtered, f'{pos_codes[token.pos_]} ({token.pos_})', token.tag_,
-                token.dep_, token.shape_, token.is_alpha, token.is_stop, token.lang_, translation_case_filtered,
-                translation_simple, translation_simple_lemma, 1)
+    word = Word(text, lemma, f'{pos}: {pos_codes.get(pos)}')
 
     # add this word to the list
     if word in words:
@@ -90,15 +79,17 @@ for token in doc:
 # set the vocabulary word list
 vocab = Vocabulary(words)
 
-# write a json file, to be read by the flashcards app
+# write the vocabulary to a json file
 book_name = os.path.splitext(BOOK)[0].rpartition('/')[2]
 with open(f'vocab/{book_name}.json', 'w') as f:
     f.write(VocabularySchema().dumps(vocab))
 
 # write a human-readable version of the vocabulary
 with open(f'vocab/{book_name}.txt', 'w') as f:
-    [f.write(f'{word.text}, {word.lemma}, {word.translation}, {word.translation_simple}, {word.translation_simple_lemma}, {word.pos}\n') for word in vocab.words]
+    [f.write(word.shorthand()) for word in vocab.words]
 
-# log the total time it took
+corpus_split_len = len(corpus.split())
+print(f'Generated {len(words)} flashcards out of {corpus_split_len} words ({len(words)/corpus_split_len:.0%})')
+
 elapsed = timeit.default_timer() - start_time
-print(f'Time: {elapsed:.2f} seconds')
+print(f'Time for flashcard creation: {elapsed:.1f} seconds')

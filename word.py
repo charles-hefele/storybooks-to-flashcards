@@ -3,24 +3,19 @@ from marshmallow import Schema, fields, post_load
 
 class Word:
 
-    def __init__(self, text, lemma, pos, tag, dep, shape, is_alpha, is_stop, lang, translation, translation_simple,
-                 translation_simple_lemma, count):
+    def __init__(self, text, lemma, pos, text_trans=None, lemma_trans=None, count=1):
         self.text = text
         self.lemma = lemma
         self.pos = pos
-        self.tag = tag
-        self.dep = dep
-        self.shape = shape
-        self.is_alpha = is_alpha
-        self.is_stop = is_stop
-        self.lang = lang
-        self.translation = translation
-        self.translation_simple = translation_simple
-        self.translation_simple_lemma = translation_simple_lemma
+        self.text_trans = text_trans
+        self.lemma_trans = lemma_trans
         self.count = count
 
     def increase_count(self):
         self.count += 1
+
+    def shorthand(self):
+        return str(f'{self.count}, {self.lemma}, {self.lemma_trans}, {self.text}, {self.text_trans}, {self.pos}\n')
 
     def __eq__(self, other):
         if isinstance(other, Word):
@@ -35,15 +30,8 @@ class WordSchema(Schema):
     text = fields.Str()
     lemma = fields.Str()
     pos = fields.Str()
-    tag = fields.Str()
-    dep = fields.Str()
-    shape = fields.Str()
-    is_alpha = fields.Str()
-    is_stop = fields.Str()
-    lang = fields.Str()
-    translation = fields.Str()
-    translation_simple = fields.Str()
-    translation_simple_lemma = fields.Str()
+    text_trans = fields.Str(allow_none=True)
+    lemma_trans = fields.Str(allow_none=True)
     count = fields.Integer()
 
     @post_load
