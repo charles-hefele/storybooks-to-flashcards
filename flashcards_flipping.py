@@ -4,15 +4,18 @@ from tkinter import ttk
 from random import randint
 
 # BOOK = 'Meine Sachen'
-BOOK = 'Mein Zoo Gucklochbuch'
+# BOOK = 'Mein Zoo Gucklochbuch'
 # BOOK = 'kasperle_auf_reisen_ch1'
+BOOK = 'kasperle_auf_reisen'
 
 VOCAB_INPUT = f'vocab/{BOOK}.json'
 SHUFFLE = False
+SORT = 'count'
 
 WINDOW_WIDTH = 600
 WINDOW_HEIGHT = 450
 LEFT_ALIGN = WINDOW_WIDTH / 2 - 100
+
 
 class App(tk.Tk):
 
@@ -26,6 +29,16 @@ class App(tk.Tk):
         with open(VOCAB_INPUT, 'r') as file:
             contents = file.read()
             self.vocab = VocabularySchema().loads(contents)
+
+        # sort the list
+        if SORT == 'count':
+            self.vocab.words.sort(key=lambda x: x.count, reverse=True)
+        elif SORT == 'alpha':
+            self.vocab.words.sort(key=lambda x: x.text)
+        elif SORT == 'pos':
+            self.vocab.words.sort(key=lambda x: x.pos)
+        elif SORT == 'lemma':
+            self.vocab.words.sort(key=lambda x: x.lemma)
 
         # init first card
         if SHUFFLE:
@@ -77,6 +90,8 @@ class App(tk.Tk):
     def flip_card(self, event):
         self.side ^= 1
         new_text = self.vocab.words[self.card].text_trans if self.side else self.vocab.words[self.card].text
+        if new_text is None:
+            new_text = '[no translation]'
         self.lbl_word.config(text=new_text)
         self.lbl_lang.config(text='Language: English' if self.side else 'Language: German')
 
