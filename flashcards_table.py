@@ -2,8 +2,8 @@ from tkinter import *
 from tkinter import ttk
 from word import VocabularySchema
 
-# BOOK = 'Meine Sachen'
-BOOK = 'Mein Zoo Gucklochbuch'
+BOOK = 'Meine Sachen'
+# BOOK = 'Mein Zoo Gucklochbuch'
 # BOOK = 'Der Kleine König - Teddy ist weg'
 # BOOK = 'kasperle_auf_reisen_ch1'
 # BOOK = 'kasperle_auf_reisen'
@@ -11,11 +11,11 @@ BOOK = 'Mein Zoo Gucklochbuch'
 VOCAB_INPUT = f'vocab/{BOOK}.json'
 ROWS = 40
 
-# SORT = 'chrono'
+SORT = 'chrono'
 # SORT = 'count'
 # SORT = 'alpha'
 # SORT = 'pos'
-SORT = 'lemma'
+# SORT = 'lemma'
 
 # read the data
 with open(VOCAB_INPUT, 'r') as file:
@@ -28,12 +28,12 @@ ws.title("Storybooks-to-Flashcards")
 frame = Frame(ws)
 frame.pack()
 
-tv = ttk.Treeview(frame, columns=(0, 1, 2, 3, 4, 5, 6), show='headings', height=ROWS)
+tv = ttk.Treeview(frame, columns=(0, 1, 2, 3, 4, 5, 6, 7), show='headings', height=ROWS)
 tv.pack(side=LEFT)
 
-NARROW_COLUMN_WIDTH = 60
-STANDARD_COLUMN_WIDTH = 190
-WIDE_COLUMN_WIDTH = 380
+NARROW_COLUMN_WIDTH = 40
+STANDARD_COLUMN_WIDTH = 150
+WIDE_COLUMN_WIDTH = 290
 
 tv.heading(0, text='#')
 tv.column(0, width=NARROW_COLUMN_WIDTH)
@@ -56,6 +56,9 @@ tv.column(5, width=STANDARD_COLUMN_WIDTH)
 tv.heading(6, text='Part of Speech')
 tv.column(6, width=WIDE_COLUMN_WIDTH)
 
+tv.heading(7, text='Sentences')
+tv.column(7, width=WIDE_COLUMN_WIDTH)
+
 sb = Scrollbar(frame, orient=VERTICAL)
 sb.pack(side=RIGHT, fill=Y)
 
@@ -74,7 +77,8 @@ elif SORT == 'lemma':
 # populate the columns
 num = 1
 for w in vocab.words:
-    tv.insert(parent='', index=END, values=(num, w.count, w.lemma, w.lemma_trans, w.text, w.text_trans, w.pos))
+    tv.insert(parent='', index=END, values=(num, w.count, w.lemma, w.lemma_trans, w.text, w.text_trans, w.pos,
+                                            str(w.sentences)))
     num += 1
 
 ws.mainloop()
