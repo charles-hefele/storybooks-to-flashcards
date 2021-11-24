@@ -2,18 +2,18 @@ import json
 import timeit
 import nltk
 from HanTa import HanoverTagger as ht
+from tqdm import tqdm
 from word import *
 import os
 from nltk.corpus import stopwords
 from spacy.lang.de.stop_words import STOP_WORDS
 
-BOOK = 'books/12mo/Meine Sachen.txt'
+# BOOK = 'books/12mo/Meine Sachen.txt'
 # BOOK = 'books/18mo/Gute Nacht, kleiner Löwe!.txt'
 # BOOK = 'books/12mo/Mein Zoo Gucklochbuch.txt'
 # BOOK = 'books/unrated/Der Kleine König - Teddy ist weg.txt'
-# BOOK = 'books/novels/kasperle_auf_reisen_ch1.txt'
-# BOOK = 'books/novels/kasperle_auf_reisen.txt'
-# BOOK = 'books/novels/test.txt'
+# BOOK = 'books/novels/Kasperle auf Reisen - Chapter 1.txt'
+BOOK = 'books/novels/Kasperle auf Reisen.txt'
 
 STOP_WORDS_SET = 'spacy'
 # STOP_WORDS_SET = 'nltk'
@@ -38,7 +38,7 @@ start_time = timeit.default_timer()
 # sentenize the corpus
 sentences = nltk.sent_tokenize(corpus)
 
-for sentence in sentences:
+for sentence in tqdm(sentences):
 
     # tokenize the sentence
     tokenizer = nltk.RegexpTokenizer(r'[a-zA-ZäÄüÜöÖß\']+')

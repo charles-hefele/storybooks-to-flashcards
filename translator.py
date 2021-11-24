@@ -1,13 +1,14 @@
 import timeit
 from google_trans_new import google_translator
+from tqdm import tqdm
 from word import *
 import os
 
 # BOOK = 'Meine Sachen'
-BOOK = 'Mein Zoo Gucklochbuch'
+# BOOK = 'Mein Zoo Gucklochbuch'
 # BOOK = 'Der Kleine König - Teddy ist weg'
-# BOOK = 'kasperle_auf_reisen_ch1'
-# BOOK = 'kasperle_auf_reisen'
+# BOOK = 'Kasperle auf Reisen - Chapter 1'
+BOOK = 'Kasperle auf Reisen'
 
 VOCAB_INPUT = f'vocab/{BOOK}.json'
 
@@ -27,7 +28,7 @@ translated = 0
 
 try:
     # for every word in the vocab
-    for word in vocab.words:
+    for word in tqdm(vocab.words):
 
         # translate both the original text and the lemma
         text_trans = translator.translate(word.text, lang_src='de', lang_tgt='en')
