@@ -30,24 +30,27 @@ try:
     # for every word in the vocab
     for word in tqdm(vocab.words):
 
-        # translate both the original text and the lemma
-        text_trans = translator.translate(word.text, lang_src='de', lang_tgt='en')
-        lemma_trans = translator.translate(word.lemma, lang_src='de', lang_tgt='en')
+        # check first if it's already been translated
+        if word.text_trans is None:
 
-        # fix capitalization
-        text_trans = text_trans.lower()
-        lemma_trans = lemma_trans.lower()
+            # translate both the original text and the lemma
+            text_trans = translator.translate(word.text, lang_src='de', lang_tgt='en')
+            lemma_trans = translator.translate(word.lemma, lang_src='de', lang_tgt='en')
 
-        # trim whitespace
-        text_trans = text_trans.rstrip()
-        lemma_trans = lemma_trans.rstrip()
+            # fix capitalization
+            text_trans = text_trans.lower()
+            lemma_trans = lemma_trans.lower()
 
-        # set the fields
-        word.text_trans = text_trans
-        word.lemma_trans = lemma_trans
+            # trim whitespace
+            text_trans = text_trans.rstrip()
+            lemma_trans = lemma_trans.rstrip()
 
-        # increment the count
-        translated += 1
+            # set the fields
+            word.text_trans = text_trans
+            word.lemma_trans = lemma_trans
+
+            # increment the count
+            translated += 1
 
 except Exception as err:
     print(f"Unexpected {err=}, {type(err)=}")
