@@ -8,12 +8,12 @@ import os
 from nltk.corpus import stopwords
 from spacy.lang.de.stop_words import STOP_WORDS
 
-# BOOK = 'books/12mo/Meine Sachen.txt'
+BOOK = 'books/12mo/Meine Sachen.txt'
 # BOOK = 'books/18mo/Gute Nacht, kleiner Löwe!.txt'
 # BOOK = 'books/12mo/Mein Zoo Gucklochbuch.txt'
 # BOOK = 'books/unrated/Der Kleine König - Teddy ist weg.txt'
 # BOOK = 'books/novels/Kasperle auf Reisen - Chapter 1.txt'
-BOOK = 'books/novels/Kasperle auf Reisen.txt'
+# BOOK = 'books/novels/Kasperle auf Reisen.txt'
 
 STOP_WORDS_SET = 'spacy'
 # STOP_WORDS_SET = 'nltk'
@@ -40,10 +40,14 @@ sentences = nltk.sent_tokenize(corpus)
 
 for sentence in tqdm(sentences):
 
+    # replace sentence newlines with spaces
+    sentence_oneliner = sentence.replace('\n', ' ')
+
     # tokenize the sentence
     tokenizer = nltk.RegexpTokenizer(r'[a-zA-ZäÄüÜöÖß\']+')
     tokens = tokenizer.tokenize(sentence)
 
+    # remove stop words
     if STOP_WORDS_SET == 'spacy':
         tokens = [t for t in tokens if not t.lower() in STOP_WORDS]  # spacy stop words
     else:
@@ -72,15 +76,12 @@ for sentence in tqdm(sentences):
         if pos != 'NN':
             text = text.lower()
 
-        # replace sentence newlines with spaces
-        sentence = sentence.replace('\n', ' ')
-
         # map the data into a custom Word object
         word = Word(text, lemma, f'{pos}: {pos_codes.get(pos)}')
 
         # add this word to the list
         if word in words:
-            words[words.index(word)].add_new_sentence(sentence)
+            words[words.index(word)].add_new_sentence(sentence_oneliner)
             words[words.index(word)].increase_count()
         else:
             word.add_new_sentence(sentence)
