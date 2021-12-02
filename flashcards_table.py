@@ -2,17 +2,17 @@ from tkinter import *
 from tkinter import ttk
 from word import VocabularySchema
 
-BOOK = 'Meine Sachen'
+# BOOK = 'Meine Sachen'
 # BOOK = 'Mein Zoo Gucklochbuch'
 # BOOK = 'Der Kleine König - Teddy ist weg'
-# BOOK = 'kasperle_auf_reisen_ch1'
-# BOOK = 'kasperle_auf_reisen'
+# BOOK = 'Kasperle auf Reisen - Chapter 1'
+BOOK = 'Kasperle auf Reisen'
 
 VOCAB_INPUT = f'vocab/{BOOK}.json'
 ROWS = 40
 
-SORT = 'chrono'
-# SORT = 'count'
+# SORT = 'chrono'
+SORT = 'count'
 # SORT = 'alpha'
 # SORT = 'pos'
 # SORT = 'lemma'
@@ -41,16 +41,16 @@ tv.column(0, width=NARROW_COLUMN_WIDTH)
 tv.heading(1, text='Count')
 tv.column(1, width=NARROW_COLUMN_WIDTH)
 
-tv.heading(2, text='Lemma')
+tv.heading(2, text='German')
 tv.column(2, width=STANDARD_COLUMN_WIDTH)
 
-tv.heading(3, text="English Lemma")
+tv.heading(3, text='English')
 tv.column(3, width=STANDARD_COLUMN_WIDTH)
 
-tv.heading(4, text='German')
+tv.heading(4, text='Lemma')
 tv.column(4, width=STANDARD_COLUMN_WIDTH)
 
-tv.heading(5, text='English')
+tv.heading(5, text='English Lemma')
 tv.column(5, width=STANDARD_COLUMN_WIDTH)
 
 tv.heading(6, text='Part of Speech')
@@ -77,7 +77,7 @@ elif SORT == 'lemma':
 # populate the columns
 num = 1
 for w in vocab.words:
-    tv.insert(parent='', index=END, values=(num, w.count, w.lemma, w.lemma_trans, w.text, w.text_trans, w.pos,
+    tv.insert(parent='', index=END, values=(num, w.count, w.text, w.text_trans, w.lemma, w.lemma_trans, w.pos,
                                             str(w.sentences)))
     num += 1
 
