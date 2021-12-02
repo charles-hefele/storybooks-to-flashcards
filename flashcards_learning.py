@@ -6,14 +6,14 @@ from random import randint
 # BOOK = 'Meine Sachen'
 # BOOK = 'Mein Zoo Gucklochbuch'
 # BOOK = 'Der Kleine König - Teddy ist weg'
-BOOK = 'Kasperle auf Reisen - Chapter 1'
-# BOOK = 'Kasperle auf Reisen'
+# BOOK = 'Kasperle auf Reisen - Chapter 1'
+BOOK = 'Kasperle auf Reisen'
 
 VOCAB_INPUT = f'vocab/{BOOK}.json'
 SHUFFLE = False
 SORT = 'count'
 
-WINDOW_WIDTH = 1300
+WINDOW_WIDTH = 1250
 WINDOW_HEIGHT = 740
 
 
@@ -76,9 +76,13 @@ class App(tk.Tk):
         self.lbl_text_trans = ttk.Label(self, text=self.get_text_trans(), font=('Helvetica', 40))
         self.lbl_text_trans.pack(pady=10, padx=pad_x, anchor='w')
 
+        # count label
+        self.lbl_count = ttk.Label(self, text=f'Count: {self.vocab.words[self.card].count}', font=('Helvetica', 18))
+        self.lbl_count.pack(pady=(30, 0), padx=pad_x, anchor='w')
+
         # lemma label
         self.lbl_lemma = ttk.Label(self, text=f'Lemma: {self.vocab.words[self.card].lemma}', font=('Helvetica', 18))
-        self.lbl_lemma.pack(pady=(30, 0), padx=pad_x, anchor='w')
+        self.lbl_lemma.pack(pady=0, padx=pad_x, anchor='w')
 
         # lemma_trans label
         self.lbl_lemma_trans = ttk.Label(self, text=f'Lemma translation: {self.get_lemma_trans()}', font=('Helvetica', 18))
@@ -135,6 +139,7 @@ class App(tk.Tk):
     def reset_fields(self):
         self.lbl_text.config(text=self.vocab.words[self.card].text)
         self.lbl_text_trans.config(text=self.get_text_trans())
+        self.lbl_count.config(text=f'Count: {self.vocab.words[self.card].count}')
         self.lbl_lemma.config(text=f'Lemma: {self.vocab.words[self.card].lemma}')
         self.lbl_lemma_trans.config(text=f'Lemma translation: {self.get_lemma_trans()}')
         self.lbl_pos.config(text=f'Part of speech: {self.vocab.words[self.card].pos}')
