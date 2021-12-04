@@ -15,6 +15,9 @@ class SpacyVecOps:
                       key=lambda x: cos(self.vec(query), self.vec(x)),
                       reverse=True)[:n]
 
+    def search_term_exists(self, term):
+        return self.vec(term).any()
+
     def closest_words_vocab(self, words, query, n=10):
         return sorted(words,
                       key=lambda x: cos(self.vec(query), self.vec(x.text)),

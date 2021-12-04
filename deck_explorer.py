@@ -2,6 +2,7 @@ import spacy
 from word import VocabularySchema
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from spacy_vec_ops import SpacyVecOps
 
 # BOOK = 'Meine Sachen'
@@ -19,13 +20,16 @@ SPACE_BETWEEN_WORDS = 5
 FONT_HEADER = 20
 FONT_GRID = 18
 PAD_X = 10
-SEARCH_RESULTS = 25
+NUM_SEARCH_RESULTS = 25
 
 
 class App(tk.Tk):
 
     def __init__(self):
         super().__init__()
+
+        # init search term
+        self.search_term = tk.StringVar()
 
         # load the model
         self.nlp = spacy.load('de_core_news_lg')
@@ -55,15 +59,23 @@ class App(tk.Tk):
         # create the widgets for the top frame
         lbl_title = ttk.Label(frame_top, text=f'Deck Explorer', font=('Helvetica', FONT_HEADER))
         lbl_book = ttk.Label(frame_top, text=f'{BOOK} ({len(self.vocab.words)} cards)', font=('Helvetica', FONT_HEADER, 'italic'))
-        self.lbl_showing = ttk.Label(frame_top, text='Showing top related words for \'Tier\':', font=('Helvetica', FONT_HEADER))
+        self.entry = ttk.Entry(frame_top, textvariable=self.search_term)
+        button = ttk.Button(frame_top, text='Search', command=self.search)
+        self.lbl_showing = ttk.Label(frame_top, text=f'Showing top {NUM_SEARCH_RESULTS} related words for \'Tier\':', font=('Helvetica', FONT_HEADER))
 
         # layout the widgets for the top frame
         lbl_title.grid(row=0, column=0, padx=PAD_X, sticky='w')
         lbl_book.grid(row=1, column=0, padx=PAD_X, sticky='w')
-        self.lbl_showing.grid(row=2, column=0, padx=PAD_X, sticky='w')
+        self.entry.grid(row=2, column=0, padx=PAD_X, sticky='we')
+        button.grid(row=2, column=1, padx=PAD_X, sticky='w')
+        self.lbl_showing.grid(row=3, column=0, padx=PAD_X, sticky='w')
+
+        # init enter button bind
+        self.entry.bind('<Return>', lambda event: self.search())
+        self.entry.focus_set()
 
         # set initial exploration word
-        exploration = self.explore(self.vocab.words, 'Tier', SEARCH_RESULTS)
+        exploration = self.explore(self.vocab.words, 'Tier', NUM_SEARCH_RESULTS)
 
         # set the widget containers
         self.terms_text = []
@@ -122,10 +134,27 @@ class App(tk.Tk):
             self.terms_pos.append(lbl_pos)
             self.terms_count.append(lbl_count)
 
+    def search(self):
+        term = self.search_term.get()
+        if self.ops.search_term_exists(term):
+            exploration = self.explore(self.vocab.words, term, NUM_SEARCH_RESULTS)
+            self.refresh(term, exploration)
+            self.search_term.set('')
+        else:
+            messagebox.showwarning('Not found', 'No word vector could be found for this word.')
+            self.focus_force()
+            self.entry.focus_set()
+
     def callback(self, obj):
         term = obj['text']
-        self.lbl_showing.configure(text=f'Showing top related words for \'{term}\':')
-        exploration = self.explore(self.vocab.words, term, SEARCH_RESULTS)
+        exploration = self.explore(self.vocab.words, term, NUM_SEARCH_RESULTS)  # the word definitely exists, so no need to check for zero vector here
+        self.refresh(term, exploration)
+
+    def explore(self, words, query, count=10):
+        return self.ops.closest_words_vocab(words, query, count)
+
+    def refresh(self, term, exploration):
+        self.lbl_showing.configure(text=f'Showing top {NUM_SEARCH_RESULTS} related words for \'{term}\':')
         for i, word in enumerate(exploration):
             self.terms_text[i].config(text=word.text)
             self.terms_text_trans[i].config(text=word.text_trans)
@@ -133,9 +162,6 @@ class App(tk.Tk):
             self.terms_lemma_trans[i].config(text=word.lemma_trans)
             self.terms_pos[i].config(text=word.pos)
             self.terms_count[i].config(text=word.count)
-
-    def explore(self, words, query, count=10):
-        return self.ops.closest_words_vocab(words, query, count)
 
 
 if __name__ == "__main__":
