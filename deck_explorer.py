@@ -11,7 +11,7 @@ from spacy_vec_ops import SpacyVecOps
 BOOK = 'Kasperle auf Reisen'
 
 VOCAB_INPUT = f'vocab/{BOOK}.json'
-
+SHOW_LEMMAS = False
 WINDOW_WIDTH = 1250
 WINDOW_HEIGHT = 740
 SPACE_FROM_LEFT_MARGIN = 20
@@ -65,44 +65,74 @@ class App(tk.Tk):
         # set initial exploration word
         exploration = self.explore(self.vocab.words, 'Tier', SEARCH_RESULTS)
 
-        self.terms_german = []
-        self.terms_english = []
+        # set the widget containers
+        self.terms_text = []
+        self.terms_text_trans = []
+        self.terms_lemma = []
+        self.terms_lemma_trans = []
+        self.terms_pos = []
+        self.terms_count = []
 
         # create the header widgets for the bottom frame
-        lbl_german_header = ttk.Label(frame_bottom, text='German', font=('Helvetica bold', FONT_GRID))
-        lbl_english_header = ttk.Label(frame_bottom, text='English', font=('Helvetica bold', FONT_GRID))
+        lbl_text_header = ttk.Label(frame_bottom, text='German', font=('Helvetica bold', FONT_GRID))
+        lbl_text_trans_header = ttk.Label(frame_bottom, text='English', font=('Helvetica bold', FONT_GRID))
+        lbl_lemma_header = ttk.Label(frame_bottom, text='Lemma', font=('Helvetica bold', FONT_GRID))
+        lbl_lemma_trans_header = ttk.Label(frame_bottom, text='Lemma (English)', font=('Helvetica bold', FONT_GRID))
+        lbl_pos_header = ttk.Label(frame_bottom, text='Part of Speech', font=('Helvetica bold', FONT_GRID))
+        lbl_count_header = ttk.Label(frame_bottom, text='Occurrences', font=('Helvetica bold', FONT_GRID))
 
         # layout the header widgets for the bottom frame
-        lbl_german_header.grid(row=0, column=1, padx=PAD_X, sticky='w')
-        lbl_english_header.grid(row=0, column=2, padx=PAD_X, sticky='w')
+        lbl_text_header.grid(row=0, column=1, padx=PAD_X, sticky='w')
+        lbl_text_trans_header.grid(row=0, column=2, padx=PAD_X, sticky='w')
+        if SHOW_LEMMAS:
+            lbl_lemma_header.grid(row=0, column=3, padx=PAD_X, sticky='w')
+            lbl_lemma_trans_header.grid(row=0, column=4, padx=PAD_X, sticky='w')
+        lbl_pos_header.grid(row=0, column=5, padx=PAD_X, sticky='w')
+        lbl_count_header.grid(row=0, column=6, padx=PAD_X, sticky='w')
 
         # create the search results widgets for the bottom frame
         for i, word in enumerate(exploration):
-            german_text = exploration[i].text
             lbl_num = ttk.Label(frame_bottom, text=f'{i+1}.', font=('Helvetica', FONT_GRID))
-            lbl_german = ttk.Label(frame_bottom, text=german_text, font=('Helvetica', FONT_GRID, 'underline'),
-                                   foreground='blue', cursor='hand2')
-            lbl_english = ttk.Label(frame_bottom, text=exploration[i].text_trans, font=('Helvetica', FONT_GRID))
+            lbl_text = ttk.Label(frame_bottom, text=exploration[i].text, font=('Helvetica', FONT_GRID, 'underline'),
+                                 foreground='blue', cursor='hand2')
+            lbl_text_trans = ttk.Label(frame_bottom, text=exploration[i].text_trans, font=('Helvetica', FONT_GRID))
+            lbl_lemma = ttk.Label(frame_bottom, text=exploration[i].lemma, font=('Helvetica', FONT_GRID))
+            lbl_lemma_trans = ttk.Label(frame_bottom, text=exploration[i].lemma_trans, font=('Helvetica', FONT_GRID))
+            lbl_pos = ttk.Label(frame_bottom, text=exploration[i].pos, font=('Helvetica', FONT_GRID))
+            lbl_count = ttk.Label(frame_bottom, text=exploration[i].count, font=('Helvetica', FONT_GRID))
 
             # layout the search results widgets for the bottom frame
             lbl_num.grid(row=i+1, column=0, padx=PAD_X, sticky='w')
-            lbl_german.grid(row=i+1, column=1, padx=PAD_X, sticky='w')
-            lbl_english.grid(row=i+1, column=2, padx=PAD_X, sticky='w')
+            lbl_text.grid(row=i+1, column=1, padx=PAD_X, sticky='w')
+            lbl_text_trans.grid(row=i+1, column=2, padx=PAD_X, sticky='w')
+            if SHOW_LEMMAS:
+                lbl_lemma.grid(row=i+1, column=3, padx=PAD_X, sticky='w')
+                lbl_lemma_trans.grid(row=i+1, column=4, padx=PAD_X, sticky='w')
+            lbl_pos.grid(row=i+1, column=5, padx=PAD_X, sticky='w')
+            lbl_count.grid(row=i+1, column=6, padx=PAD_X, sticky='w')
 
             # add mouse click
-            lbl_german.bind("<Button-1>", lambda event, obj=lbl_german: self.callback(obj))
+            lbl_text.bind("<Button-1>", lambda event, obj=lbl_text: self.callback(obj))
 
             # add these labels to the label lists
-            self.terms_german.append(lbl_german)
-            self.terms_english.append(lbl_english)
+            self.terms_text.append(lbl_text)
+            self.terms_text_trans.append(lbl_text_trans)
+            self.terms_lemma.append(lbl_lemma)
+            self.terms_lemma_trans.append(lbl_lemma_trans)
+            self.terms_pos.append(lbl_pos)
+            self.terms_count.append(lbl_count)
 
     def callback(self, obj):
         term = obj['text']
         self.lbl_showing.configure(text=f'Showing top related words for \'{term}\':')
         exploration = self.explore(self.vocab.words, term, SEARCH_RESULTS)
         for i, word in enumerate(exploration):
-            self.terms_german[i].config(text=word.text)
-            self.terms_english[i].config(text=word.text_trans)
+            self.terms_text[i].config(text=word.text)
+            self.terms_text_trans[i].config(text=word.text_trans)
+            self.terms_lemma[i].config(text=word.lemma)
+            self.terms_lemma_trans[i].config(text=word.lemma_trans)
+            self.terms_pos[i].config(text=word.pos)
+            self.terms_count[i].config(text=word.count)
 
     def explore(self, words, query, count=10):
         return self.ops.closest_words_vocab(words, query, count)
