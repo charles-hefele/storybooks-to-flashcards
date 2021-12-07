@@ -22,7 +22,7 @@ class Word:
         self.sentences.append(sentence)
 
     def shorthand(self):
-        return str(f'{self.count}, {self.lemma}, {self.lemma_trans}, {self.text}, {self.text_trans}, {self.pos}, '
+        return str(f'{self.count}, {self.text}, {self.text_trans}, {self.lemma}, {self.lemma_trans}, {self.pos}, '
                    f'{self.sentences}\n')
 
     def __eq__(self, other):
