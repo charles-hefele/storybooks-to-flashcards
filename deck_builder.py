@@ -87,8 +87,11 @@ for sentence in tqdm(sentences):
             word.add_new_sentence(sentence)
             words.append(word)
 
+# calculate original word count
+original_word_count = len(corpus.split())
+
 # set the vocabulary word list
-vocab = Vocabulary(words)
+vocab = Vocabulary(words, original_word_count)
 
 # write the vocabulary to a json file
 book_name = os.path.splitext(BOOK)[0].rpartition('/')[2]

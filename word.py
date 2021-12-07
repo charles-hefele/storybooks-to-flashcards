@@ -49,15 +49,23 @@ class WordSchema(Schema):
 
 
 class Vocabulary:
-    def __init__(self, words):
+    def __init__(self, words, original_word_count):
         self.words = words
+        self.original_word_count = original_word_count
 
     def __repr__(self):
         return str(vars(self))
 
+    def unique_words(self):
+        return set([word.text for word in self.words])
+
+    def unique_lemmas(self):
+        return set([word.lemma for word in self.words])
+
 
 class VocabularySchema(Schema):
     words = fields.Nested(WordSchema, many=True)
+    original_word_count = fields.Int()
 
     @post_load(pass_many=True)
     def make_object(self, data, **__):

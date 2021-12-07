@@ -27,7 +27,7 @@ PAD_X = 10
 NUM_SEARCH_RESULTS = 25
 INITIAL_WORD = 'Tier'
 MSG_SHOWING = 'Showing top {} related words for \'{}\':'
-
+MSG_STATS = '{} cards, {} unique words, {} unique lemmas, constructed from {} words'
 
 def destroy_widgets(frame):
     for widget in frame.winfo_children():
@@ -149,7 +149,8 @@ class App(tk.Tk):
             self.vocab = VocabularySchema().loads(contents)
 
         # set the stats string
-        stats = f'{len(self.vocab.words)} cards'
+        stats = MSG_STATS.format(len(self.vocab.words), len(self.vocab.unique_words()), len(self.vocab.unique_lemmas()),
+                                 self.vocab.original_word_count)
         self.lbl_stats.config(text=stats)
 
         # set initial exploration word
