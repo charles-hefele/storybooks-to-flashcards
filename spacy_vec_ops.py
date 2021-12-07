@@ -1,5 +1,4 @@
-from vec_math import *
-import numpy as np
+import vec_math as vm
 
 
 class SpacyVecOps:
@@ -10,25 +9,10 @@ class SpacyVecOps:
     def vec(self, word):
         return self.nlp.vocab[word].vector
 
-    def closest_words(self, tokens, query, n=10):
-        return sorted(tokens,
-                      key=lambda x: cos(self.vec(query), self.vec(x)),
-                      reverse=True)[:n]
-
     def search_term_exists(self, term):
         return self.vec(term).any()
 
-    def closest_words_vocab(self, words, query, n=10):
+    def closest_words(self, words, query, n=10):
         return sorted(words,
-                      key=lambda x: cos(self.vec(query), self.vec(x.text)),
-                      reverse=True)[:n]
-
-    def sentence_to_vec(self, s):
-        sent = self.nlp(s)
-        return mean([w.vector for w in sent])
-
-    def closest_sentences(self, sentences, input_str, n=10):
-        input_vec = self.sentence_to_vec(input_str)
-        return sorted(sentences,
-                      key=lambda x: cos(np.mean([w.vector for w in x], axis=0), input_vec),
+                      key=lambda x: vm.cos(self.vec(query), self.vec(x.text)),
                       reverse=True)[:n]

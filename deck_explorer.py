@@ -126,7 +126,7 @@ class App(tk.Tk):
         self.refresh(term, exploration)
 
     def explore(self, words, query, count=10):
-        return self.ops.closest_words_vocab(words, query, count)
+        return self.ops.closest_words(words, query, count)
 
     def refresh(self, term, exploration):
         self.lbl_showing.configure(text=MSG_SHOWING.format(NUM_SEARCH_RESULTS, term))
