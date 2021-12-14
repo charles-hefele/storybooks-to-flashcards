@@ -4,8 +4,9 @@
 
 # input/output data
 books
-lookup
+reference
 vocab
+output
 
 # sandbox
 sandbox

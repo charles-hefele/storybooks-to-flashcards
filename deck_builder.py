@@ -14,17 +14,21 @@ BOOK = 'books/12mo/Meine Sachen.txt'
 # BOOK = 'books/unrated/Der Kleine König - Teddy ist weg.txt'
 # BOOK = 'books/novels/Kasperle auf Reisen - Chapter 1.txt'
 # BOOK = 'books/novels/Kasperle auf Reisen.txt'
+# BOOK = 'books/novels/Vom Mars zur Erde.txt'
 
 STOP_WORDS_SET = 'spacy'
 # STOP_WORDS_SET = 'nltk'
+
+POS_EXCLUSIONS = ['ART', 'CARD', 'FM', 'ITJ', 'KON', 'KOUS', 'NE', 'PDAT', 'PDS', 'PIAT', 'PIS', 'PRELS', 'PTKA',
+                  'PTKANT', 'PWS', 'XY']
 
 # open and read the book
 file = open(BOOK, 'rt')
 corpus = file.read()
 
-# get the list of POS codes
-with open('lookup/pos_codes_hanta.json', 'r') as f:
-    pos_codes = json.load(f)
+# get the list of POS code descriptions
+with open('lookup/pos_code_descriptions_hanta.json', 'r') as f:
+    pos_code_descriptions = json.load(f)
 
 # init the words list
 words = []
@@ -63,9 +67,7 @@ for sentence in tqdm(sentences):
         pos = tag[2]
 
         # remove certain parts of speech
-        pos_list = ['ART', 'CARD', 'FM', 'ITJ', 'KON', 'KOUS', 'NE', 'PDAT', 'PDS', 'PIAT', 'PIS', 'PRELS', 'PTKA',
-                    'PTKANT', 'PWS', 'XY']
-        if pos in pos_list:
+        if pos in POS_EXCLUSIONS:
             continue
 
         # skip any tokens where the lemma contains an apostrophe
@@ -77,7 +79,7 @@ for sentence in tqdm(sentences):
             text = text.lower()
 
         # map the data into a custom Word object
-        word = Word(text, lemma, f'{pos}: {pos_codes.get(pos)}')
+        word = Word(text, lemma, f'{pos}: {pos_code_descriptions.get(pos)}')
 
         # add this word to the list
         if word in words:

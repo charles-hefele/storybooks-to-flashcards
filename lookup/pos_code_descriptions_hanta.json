@@ -1,0 +1,23 @@
+{
+  "ADJA": "attributive adjective",
+  "ADJD": "adverbial or predicative adjective",
+  "ADV": "adverb",
+  "APPO": "postposition",
+  "APPR": "preposition left hand part of double preposition",
+  "APPRART": "preposition with fused article",
+  "APZR": "right hand part of double preposition",
+  "NN": "noun",
+  "PROAV": "pronominal adverb",
+  "PTKVZ": "separable prefix",
+  "PWAV": "interrogative adverb",
+  "VAIMP": "imperative of auxiliary",
+  "VAFIN": "finite auxiliary verb",
+  "VAPP": "past participle of auxiliary",
+  "VMINF": "infinitive of modal",
+  "VMPP": "past participle of auxiliary",
+  "VVFIN": "finite full verb",
+  "VVIMP": "imperative of full verb",
+  "VVINF": "infinitive of full verb",
+  "VVIZU": "infinitive with incorporated 'zu'",
+  "VVPP": "past participle of full verb"
+}
