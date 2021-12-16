@@ -7,7 +7,17 @@ import nltk
 from spacy.lang.de.stop_words import STOP_WORDS
 from HanTa import HanoverTagger as ht
 import pandas as pd
+from pprint import pprint
+from google_trans_new import google_translator
 # credit https://www.kaggle.com/jeffd23/visualizing-word-vectors-with-t-sne/notebook
+
+
+def print_top_similarities(term, count):
+    similar = model.wv.most_similar(term, topn=count)
+    translated = [(sim[0], translator.translate(sim[0], lang_src='de', lang_tgt='en')) for sim in similar]
+    print('Top {} results for {} ({}):'.format(count, term, translator.translate(term, lang_src='de', lang_tgt='en')))
+    pprint(translated)
+
 
 # BOOK = 'books/12mo/Meine Sachen.txt'
 # BOOK = 'books/18mo/Gute Nacht, kleiner Löwe!.txt'
@@ -16,6 +26,8 @@ import pandas as pd
 # BOOK = 'books/novels/Kasperle auf Reisen - Chapter 1.txt'
 BOOK = 'books/novels/Kasperle auf Reisen.txt'
 # BOOK = 'books/novels/Vom Mars zur Erde.txt'
+
+EVALUATE_MODEL = True
 
 POS_EXCLUSIONS = ['ART', 'CARD', 'FM', 'ITJ', 'KON', 'KOUS', 'NE', 'PDAT', 'PDS', 'PIAT', 'PIS', 'PRELS', 'PTKA',
                   'PTKANT', 'PWS', 'XY']
@@ -26,6 +38,9 @@ corpus = file.read()
 
 # create the tagger
 tagger = ht.HanoverTagger('morphmodel_ger.pgz')
+
+# init the translator
+translator = google_translator()
 
 # tokenize the sentences
 print('tokenizing the sentences')
@@ -68,6 +83,18 @@ vectors_df = pd.DataFrame(vectors)
 vectors_df = pd.DataFrame(vectors_df[1].to_list(), index=vectors_df[0])
 vectors_df.index.name = 'word'
 vectors_df.to_csv('output/storybook_word_vectors.csv', encoding='utf-8-sig')    # need the encoding to render the foreign characters correctly in Excel
+
+# evaluate the model
+if EVALUATE_MODEL:
+    print('evaluating model')
+    start_time = timeit.default_timer()
+    NUM_RESULTS = 10
+    print_top_similarities('Hund', NUM_RESULTS)  # dog
+    print_top_similarities('rot', NUM_RESULTS)  # red
+    print_top_similarities('lachen', NUM_RESULTS)  # laugh
+    print_top_similarities('Brot', NUM_RESULTS)  # bread
+    elapsed = timeit.default_timer() - start_time
+    print(f'time for model evaluation: {elapsed:.2f} seconds')
 
 # split the vectors into tokens and labels
 tokens = []
