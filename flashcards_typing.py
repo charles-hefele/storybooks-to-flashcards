@@ -4,7 +4,9 @@ from random import randint
 from word import VocabularySchema
 
 # BOOK = 'Meine Sachen'
-BOOK = 'Mein Zoo Gucklochbuch'
+# BOOK = 'Mein Zoo Gucklochbuch'
+# BOOK = 'Kasperle auf Reisen - Chapter 1'
+BOOK = 'Kasperle auf Reisen'
 
 VOCAB_INPUT = f'vocab/{BOOK}.json'
 SHUFFLE = False

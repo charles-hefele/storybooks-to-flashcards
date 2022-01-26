@@ -5,8 +5,8 @@ from random import randint
 
 # BOOK = 'Meine Sachen'
 # BOOK = 'Mein Zoo Gucklochbuch'
-# BOOK = 'kasperle_auf_reisen_ch1'
-BOOK = 'kasperle_auf_reisen'
+# BOOK = 'Kasperle auf Reisen - Chapter 1'
+BOOK = 'Kasperle auf Reisen'
 
 VOCAB_INPUT = f'vocab/{BOOK}.json'
 SHUFFLE = False

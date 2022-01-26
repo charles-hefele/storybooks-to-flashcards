@@ -13,7 +13,7 @@ import timeit
 BOOK = 'Kasperle auf Reisen'
 VOCAB_INPUT = f'vocab/{BOOK}.json'
 
-MINIMUM_WORD_COUNT = 10
+MINIMUM_WORD_COUNT = 5
 
 # start timer
 start_time = timeit.default_timer()
@@ -56,7 +56,7 @@ for value in new_values:
     y.append(value[1])
 
 # plot it
-plt.figure(figsize=(7, 7))
+plt.figure('Storybooks-to-Flashcards: Deck Visualizer', figsize=(7, 7))
 for i in range(len(x)):
     plt.scatter(x[i],y[i])
     plt.annotate(labels[i],
@@ -65,6 +65,7 @@ for i in range(len(x)):
                  textcoords='offset points',
                  ha='right',
                  va='bottom')
+plt.title('t-SNE plot')
 plt.savefig('output/book_vocab_using_spaCy_vectors.png')
 plt.show()
 

@@ -24,8 +24,9 @@ def print_top_similarities(term, count):
 # BOOK = 'books/12mo/Mein Zoo Gucklochbuch.txt'
 # BOOK = 'books/unrated/Der Kleine König - Teddy ist weg.txt'
 # BOOK = 'books/novels/Kasperle auf Reisen - Chapter 1.txt'
-BOOK = 'books/novels/Kasperle auf Reisen.txt'
+# BOOK = 'books/novels/Kasperle auf Reisen.txt'
 # BOOK = 'books/novels/Vom Mars zur Erde.txt'
+BOOK = 'books/novels/combined.txt'
 
 EVALUATE_MODEL = True
 
@@ -69,7 +70,7 @@ for sentence in tqdm(sentences):
 # generate the word vectors
 print('generating word vectors')
 start_time = timeit.default_timer()
-model = word2vec.Word2Vec(sentence_arrays, vector_size=50, min_count=5, window=5, workers=4)
+model = word2vec.Word2Vec(sentence_arrays, vector_size=100, min_count=5, window=5, workers=4)
 print(f'generated {len(model.wv)} word vectors')
 elapsed = timeit.default_timer() - start_time
 print(f'time for word vector training: {elapsed:.2f} seconds')
@@ -121,17 +122,18 @@ for value in new_values:
 # plot the t-SNE model
 print('plotting the t-SNE model')
 start_time = timeit.default_timer()
-plt.figure(figsize=(7, 7))
+plt.figure('Storybooks-to-Flashcards: Deck Visualizer', figsize=(7, 7))
 for i in tqdm(range(len(x))):
     plt.scatter(x[i],y[i])
-    plt.annotate(labels[i],
-                 xy=(x[i], y[i]),
-                 xytext=(5, 2),
-                 textcoords='offset points',
-                 ha='right',
-                 va='bottom')
+    # plt.annotate(labels[i],
+    #              xy=(x[i], y[i]),
+    #              xytext=(5, 2),
+    #              textcoords='offset points',
+    #              ha='right',
+    #              va='bottom')
 elapsed = timeit.default_timer() - start_time
 print(f'Time for plot generation: {elapsed:.2f} seconds')
+plt.title('t-SNE plot')
 plt.savefig('output/book_vocab_using_custom_vectors.png')
 plt.show()
 

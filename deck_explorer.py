@@ -7,6 +7,7 @@ from spacy_vec_ops import SpacyVecOps
 
 BOOKS = [
     'Kasperle auf Reisen',
+    'Kasperle auf Reisen - Chapter 1',
     'Gute Nacht, kleiner Löwe!',
     'Meine Sachen',
     'Mein Zoo Gucklochbuch',

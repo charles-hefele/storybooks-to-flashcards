@@ -48,7 +48,7 @@ for sentence in tqdm(sentences):
     sentence_oneliner = sentence.replace('\n', ' ')
 
     # tokenize the sentence
-    tokenizer = nltk.RegexpTokenizer(r'[a-zA-ZäÄüÜöÖß\']+')
+    tokenizer = nltk.RegexpTokenizer(r'[a-zA-ZäÄüÜöÖß\']+')  # can't use '\w+' here b/c it tokenizes words ending in ''s' into 's' as its own word
     tokens = tokenizer.tokenize(sentence)
 
     # remove stop words

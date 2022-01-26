@@ -4,11 +4,14 @@ from tqdm import tqdm
 from word import *
 import os
 
-# BOOK = 'Meine Sachen'
+BOOK = 'Meine Sachen'
 # BOOK = 'Mein Zoo Gucklochbuch'
+# BOOK = 'Gute Nacht, kleiner Löwe!'
 # BOOK = 'Der Kleine König - Teddy ist weg'
 # BOOK = 'Kasperle auf Reisen - Chapter 1'
-BOOK = 'Kasperle auf Reisen'
+# BOOK = 'Kasperle auf Reisen'
+# BOOK = 'Vom Mars zur Erde'
+
 
 VOCAB_INPUT = f'vocab/{BOOK}.json'
 
